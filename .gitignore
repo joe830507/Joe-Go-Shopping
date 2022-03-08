@@ -16,3 +16,4 @@ HELP.md
 .project
 .classpath
 .mvn/wrapper/maven-wrapper.properties
+.factorypath
