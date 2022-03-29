@@ -12,7 +12,7 @@ public class BeanUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(BeanUtil.class);
 
-	public static <T> T copyPropertiesWithoutNull(T source, T target) {
+	public static <T> void copyPropertiesWithoutNull(T source, T target) {
 		Field[] fields = source.getClass().getDeclaredFields();
 		List<String> ignoredList = new ArrayList<>();
 		for (int i = 0; i < fields.length; i++) {
@@ -28,6 +28,5 @@ public class BeanUtil {
 			}
 		}
 		BeanUtils.copyProperties(source, target, ignoredList.toArray(new String[ignoredList.size()]));
-		return target;
 	}
 }
