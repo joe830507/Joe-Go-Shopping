@@ -1,15 +1,16 @@
 package com.lin.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import com.lin.dto.EmployeeAddDto;
+import com.lin.dto.EmployeeQueryDto;
 import com.lin.dto.EmployeeUpdateDto;
 import com.lin.entity.Employee;
 
 public interface EmployeeService {
-	Employee findEmployeeById(String id);
+	Employee findEmployeeById(EmployeeQueryDto dto);
 
-	List<Employee> findEmployees();
+	Page<Employee> findEmployees(EmployeeQueryDto dto);
 
 	void addEmployee(EmployeeAddDto dto);
 

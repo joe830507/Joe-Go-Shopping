@@ -27,8 +27,8 @@ public class EmployeeController {
 	@GetMapping
 	public ApiResult queryEmployees(EmployeeQueryDto query) {
 		if (StringUtils.hasText(query.getId()))
-			return ApiResult.ok(employeeService.findEmployeeById(query.getId()));
-		return ApiResult.ok(employeeService.findEmployees());
+			return ApiResult.ok(employeeService.findEmployeeById(query));
+		return ApiResult.ok(employeeService.findEmployees(query));
 	}
 
 	@PostMapping

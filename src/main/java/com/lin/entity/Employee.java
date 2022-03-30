@@ -1,5 +1,7 @@
 package com.lin.entity;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -13,4 +15,6 @@ public class Employee {
 	private String account;
 	@JsonIgnore
 	private String password;
+	private Date createTime;
+	private Date updateTime;
 }

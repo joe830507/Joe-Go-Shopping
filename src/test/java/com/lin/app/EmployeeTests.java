@@ -1,17 +1,16 @@
 package com.lin.app;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
-import org.springframework.util.CollectionUtils;
+import org.springframework.data.domain.Page;
 
 import com.lin.controller.EmployeeController;
 import com.lin.dto.ApiResult;
@@ -32,7 +31,6 @@ class EmployeeTests {
 	private EmployeesRepository employeesRepository;
 
 	@Test
-	@Order(value = 1)
 	void addEmployee() {
 		EmployeeAddDto dto = new EmployeeAddDto();
 		dto.setAccount("test");
@@ -47,11 +45,17 @@ class EmployeeTests {
 		Example<Employee> example = Example.of(employee);
 		Boolean isPresent = employeesRepository.findOne(example).isPresent();
 		assertTrue(isPresent);
+		employeesRepository.deleteAll();
 	}
 
 	@Test
-	@Order(value = 2)
 	void updateEmployee() {
+		EmployeeAddDto updateDto = new EmployeeAddDto();
+		updateDto.setAccount("test");
+		updateDto.setPassword("dto");
+		updateDto.setFirstName("George");
+		updateDto.setLastName("Bell");
+		employeeController.addEmployee(updateDto);
 		Employee employee = employeesRepository.findAll().get(0);
 		EmployeeUpdateDto dto = new EmployeeUpdateDto();
 		dto.setId(employee.getId());
@@ -63,7 +67,6 @@ class EmployeeTests {
 	}
 
 	@Test
-	@Order(value = 3)
 	void deleteEmployee() {
 		EmployeeAddDto dto = new EmployeeAddDto();
 		dto.setAccount("test");
@@ -80,26 +83,29 @@ class EmployeeTests {
 	}
 
 	@Test
-	@Order(value = 4)
 	void queryEmployees() {
+		addEmployees();
+		EmployeeQueryDto queryDto = new EmployeeQueryDto();
+		ApiResult result = employeeController.queryEmployees(queryDto);
+		@SuppressWarnings("unchecked")
+		Page<Employee> employeePage = (Page<Employee>) result.getResponseBody();
+		List<Employee> employees = employeePage.getContent();
+		assertEquals(2, employees.size());
+		employeesRepository.deleteAll();
+	}
+
+	private void addEmployees() {
 		EmployeeAddDto dto = new EmployeeAddDto();
 		dto.setAccount("test");
 		dto.setPassword("dto");
 		dto.setFirstName("George");
 		dto.setLastName("Bell");
 		employeeController.addEmployee(dto);
-		EmployeeQueryDto queryDto = new EmployeeQueryDto();
-		ApiResult result = employeeController.queryEmployees(queryDto);
-		@SuppressWarnings("unchecked")
-		List<Employee> employees = (List<Employee>) result.getResponseBody();
-		if (!CollectionUtils.isEmpty(employees)) {
-			String id = employees.get(0).getId();
-			queryDto.setId(id);
-			result = employeeController.queryEmployees(queryDto);
-			Employee singleEmployee = (Employee) result.getResponseBody();
-			assertNotNull(singleEmployee);
-			employeesRepository.deleteById(id);
-		}
+		dto.setAccount("test2");
+		dto.setPassword("dto2");
+		dto.setFirstName("George2");
+		dto.setLastName("Bell2");
+		employeeController.addEmployee(dto);
 	}
 
 }

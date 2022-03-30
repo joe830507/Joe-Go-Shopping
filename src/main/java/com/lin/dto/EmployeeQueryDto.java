@@ -6,4 +6,6 @@ import lombok.Data;
 public class EmployeeQueryDto {
 
 	private String id;
+	private Integer pageNumber = 0;
+	private Integer pageSize = 5;
 }
